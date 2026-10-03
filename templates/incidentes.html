@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVUS - Centro de Incidentes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #06090f;
+            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid #30363d;
+            backdrop-filter: blur(10px);
+        }
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-white tracking-tight">Centro de Incidentes Reales</h1>
+                <p class="text-gray-400 mt-1">
+                    Sector detectado: <span class="text-blue-400 font-mono font-bold">{{ user.sector.upper() }}</span>
+                </p>
+            </div>
+            <div class="flex gap-4">
+                <div class="glass-card px-6 py-2 rounded-lg text-center border-red-500/30">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Alertas Críticas</p>
+                    <p class="text-2xl font-bold text-red-500">{{ total_criticos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-xl overflow-hidden shadow-2xl">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-[#161b22] border-b border-gray-800">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">ID Incidente</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Origen / IP</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Tipo de Amenaza</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Gravedad</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Timestamp</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Acción</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800">
+                    {% if incidentes %}
+                        {% for incidente in incidentes %}
+                        <tr class="hover:bg-[#0d1117] transition-colors">
+                            <td class="px-6 py-4 font-mono text-sm text-blue-300">{{ incidente.id }}</td>
+                            <td class="px-6 py-4 font-semibold text-gray-200">{{ incidente.ip }}</td>
+                            <td class="px-6 py-4">
+                                <span class="block text-sm text-white font-medium">{{ incidente.tipo }}</span>
+                                <span class="text-xs text-gray-500">{{ incidente.descripcion }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if incidente.gravedad == 'CRITICAL' %}
+                                    <span class="flex items-center gap-2 text-red-500 font-black text-xs">
+                                        <span class="h-2 w-2 rounded-full bg-red-500 pulse-red"></span> CRÍTICO
+                                    </span>
+                                {% else %}
+                                    <span class="text-yellow-500 font-bold text-xs uppercase">ALTA</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-400 font-mono">{{ incidente.timestamp }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button class="bg-blue-600/10 border border-blue-500/50 text-blue-400 px-4 py-1.5 rounded text-xs font-bold hover:bg-blue-600 hover:text-white transition-all shadow-lg shadow-blue-500/10">
+                                    Mitigar
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-16 text-center text-gray-500 italic">
+                                <div class="flex flex-col items-center gap-3">
+                                    <svg class="w-12 h-12 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    <span>No se detectan amenazas activas en este momento. La red está limpia.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 flex justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest border-t border-gray-800 pt-4">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1"><span class="h-1.5 w-1.5 bg-blue-500 rounded-full"></span> Escaneo en vivo</span>
+                <span class="flex items-center gap-1"><span class="h-1.5 w-1.5 bg-green-500 rounded-full"></span> Monitoreo activo</span>
+            </div>
+            <div>NOVUS SECURITY ENGINE v1.0.5 - INTEGRIDAD DE DATOS GARANTIZADA</div>
+        </div>
+    </div>
+</body>
+</html>

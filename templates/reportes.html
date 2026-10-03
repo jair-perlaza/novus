@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NOVUS - Centro de Reportes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #06090f; --accent: #5d5fef; }
+        body { background-color: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+        .report-card { background: #0c121d; border: 1px solid #1e293b; transition: all 0.3s; }
+        .report-card:hover { border-color: var(--accent); background: #111827; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="p-8 border-b border-gray-800 flex justify-between items-center bg-[#06090f]/50 backdrop-blur">
+            <div>
+                <h1 class="text-2xl font-bold">REPORTES AUTOMATIZADOS</h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest italic">Inteligencia de Datos NOVUS v1.2</p>
+            </div>
+            <button class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg text-xs font-black transition-all">
+                GENERAR AHORA <i class="fas fa-sync-alt ml-2"></i>
+            </button>
+        </header>
+
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="report-card p-6 rounded-2xl">
+                <h2 class="text-xs font-bold text-indigo-400 mb-6 uppercase tracking-widest">Estado de la Red (Hoy)</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-gray-800 pb-2">
+                        <span class="text-gray-400 text-sm">Dispositivos Escaneados:</span>
+                        <span class="font-bold">{{ resumen.dispositivos_protegidos }}</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800 pb-2">
+                        <span class="text-gray-400 text-sm">Pruebas de Pentesting:</span>
+                        <span class="font-bold text-indigo-400">{{ resumen.pruebas_pentesting if resumen.pruebas_pentesting is defined else 'Sin datos disponibles' }}</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-800 pb-2">
+                        <span class="text-gray-400 text-sm">Amenazas Bloqueadas:</span>
+                        <span class="font-bold text-red-500">{{ resumen.amenazas_bloqueadas }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400 text-sm">Nivel de Riesgo:</span>
+                        <span class="font-black text-green-500">{{ resumen.nivel_riesgo }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#0c121d] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
+                <div class="p-4 bg-[#161b22] border-b border-gray-800">
+                    <span class="text-[10px] font-bold uppercase text-gray-400">Archivos Listos para descarga</span>
+                </div>
+                <div class="divide-y divide-gray-800">
+                    {% for rep in historial %}
+                    <div class="p-4 flex items-center justify-between hover:bg-indigo-500/5 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <i class="far fa-file-pdf text-red-500 text-xl"></i>
+                            <div>
+                                <div class="text-xs font-bold">{{ rep.tipo }}</div>
+                                <div class="text-[9px] text-gray-600 italic">Generado el {{ rep.fecha }}</div>
+                            </div>
+                        </div>
+                        <a href="/descargar-reporte/{{ rep.id }}" class="bg-gray-800 hover:bg-indigo-600 px-3 py-1.5 rounded text-[10px] font-bold transition-all no-underline text-white">
+                            DESCARGAR
+                        </a>
+                    </div>
+                    {% endfor %}
+                    {% if not historial %}
+                    <div class="p-6 text-center text-gray-500 text-sm italic">Sin datos disponibles — no hay reportes generados</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

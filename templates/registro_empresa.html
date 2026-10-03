@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVUS - Registro de Infraestructura y Membresía</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-cyan: #00d4ff;
+            --primary-indigo: #4f46e5;
+            --bg-dark: #060b1a;
+            --card-bg: rgba(13, 19, 34, 0.96);
+            --border-color: #1b2742;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(145deg, var(--bg-dark), #0b132b);
+            color: #e6eefb;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 14px 50px rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        h1, h2 { margin: 0 0 10px; color: var(--primary-cyan); text-transform: uppercase; letter-spacing: 1px; }
+        .section-desc { margin-bottom: 25px; color: #9fb4d8; font-size: 0.9rem; border-left: 3px solid var(--primary-indigo); padding-left: 15px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .field { display: flex; flex-direction: column; margin-bottom: 15px; }
+        label { font-size: 0.85rem; margin-bottom: 8px; color: #bfd0ea; font-weight: 600; text-transform: uppercase; }
+        
+        input, select, textarea {
+            border: 1px solid #22365f;
+            background: #091224;
+            color: #dbe7ff;
+            border-radius: 10px;
+            padding: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus { border-color: var(--primary-cyan); box-shadow: 0 0 8px rgba(0, 212, 255, 0.3); }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .plan-card {
+            background: #0c121d;
+            border: 1px solid #1b2742;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            border-top: 4px solid transparent;
+        }
+
+        .plan-card.selected {
+            border-color: var(--primary-cyan);
+            background: rgba(0, 212, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .plan-card h3 { font-size: 1.1rem; margin: 5px 0; color: #fff; }
+        .plan-price { font-size: 1.3rem; font-weight: 800; color: var(--primary-cyan); margin-bottom: 10px; }
+        .plan-features { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #8e9db9; }
+        .plan-features li { margin-bottom: 6px; }
+        .plan-features i { color: var(--primary-indigo); margin-right: 6px; }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary-indigo), #6366f1);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 30px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-submit:hover { transform: scale(1.01); filter: brightness(1.1); }
+
+        .legal-notice {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: #7186ac;
+            margin-top: 20px;
+            border: 1px solid #1b2742;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form action="{{ url_for('registro_empresa') }}" method="post">
+        
+        <!-- BLOQUE 1: DATOS DE LA ENTIDAD Y CREDENCIALES (AÑADIDOS CORREO Y CLAVE) -->
+        <div class="card">
+            <h1><i class="fas fa-building"></i> Registro de Entidad</h1>
+            <div class="section-desc">Credenciales de acceso para la plataforma y datos legales de la organización.</div>
+            
+            <div class="grid">
+                <div class="field">
+                    <label>Nombre de la Organización</label>
+                    <input type="text" name="empresa" placeholder="Ej: Tech Solutions S.A.S" required>
+                </div>
+                <div class="field">
+                    <label>NIT / Identificación Fiscal</label>
+                    <input type="text" name="nit" placeholder="900.000.000-1" required>
+                </div>
+                <div class="field">
+                    <label>Correo Electrónico de Usuario</label>
+                    <input type="email" name="email_usuario" placeholder="admin@novus.com" required>
+                </div>
+                <div class="field">
+                    <label>Contraseña de Acceso</label>
+                    <input type="password" name="password" placeholder="Mínimo 10 caracteres" required minlength="10">
+                </div>
+                <div class="field">
+                    <label>Sector de Operación</label>
+                    <select id="sector" name="sector" required></select>
+                </div>
+                <div class="field">
+                    <label>Servicio NOVUS Requerido</label>
+                    <select id="servicio" name="servicio" required></select>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOQUE 2: INFRAESTRUCTURA TÉCNICA -->
+        <div class="card">
+            <h2><i class="fas fa-network-wired"></i> Perfil de Infraestructura</h2>
+            <div class="section-desc">Configuración para el monitoreo de activos y redes en tiempo real.</div>
+            
+            <div class="grid">
+                <div class="field">
+                    <label>Tamaño de la Empresa (Empleados)</label>
+                    <select name="empleados">
+                        <option value="1-10">Micro (1-10)</option>
+                        <option value="11-50">Pequeña (11-50)</option>
+                        <option value="51-200">Mediana (51-200)</option>
+                        <option value="200+">Gran Empresa (200+)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Rango de Activos (IPs a monitorear)</label>
+                    <input type="number" name="activos" placeholder="Cantidad de dispositivos" required>
+                </div>
+                <div class="field">
+                    <label>Responsable Técnico (CISO/CTO)</label>
+                    <input type="text" name="responsable" placeholder="Nombre del encargado">
+                </div>
+                <div class="field">
+                    <label>Correo de Alerta Crítica</label>
+                    <input type="email" name="email_alerta" placeholder="alertas@empresa.com" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOQUE 3: MEMBRESÍA (4 RANGOS) -->
+        <div class="card">
+            <h2><i class="fas fa-shield-alt"></i> Nivel de Cobertura NOVUS</h2>
+            <div class="section-desc">Selecciona tu rango de inversión. El plan corporativo habilita los 3,500 tests necesarios.</div>
+            
+            <input type="hidden" name="plan_seleccionado" id="plan_seleccionado" value="CORP">
+
+            <div class="pricing-grid">
+                <div class="plan-card" onclick="selectPlan('STARTER', this)">
+                    <h3>SME STARTER</h3>
+                    <div class="plan-price">$30 - $100</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 100 Tests Diarios</li>
+                        <li><i class="fas fa-check"></i> Escaneo Básico</li>
+                    </ul>
+                </div>
+
+                <div class="plan-card" onclick="selectPlan('PRO', this)">
+                    <h3>BUSINESS PRO</h3>
+                    <div class="plan-price">$200 - $500</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 500 Tests Diarios</li>
+                        <li><i class="fas fa-check"></i> Radar de Tráfico</li>
+                    </ul>
+                </div>
+
+                <div class="plan-card selected" onclick="selectPlan('CORP', this)">
+                    <h3>CORPORATIVO</h3>
+                    <div class="plan-price">$750 - $1100</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 3,500 Penetration Tests</li>
+                        <li><i class="fas fa-check"></i> IA de Defensa Activa</li>
+                    </ul>
+                </div>
+
+                <div class="plan-card" onclick="selectPlan('ELITE', this)">
+                    <h3>MASTER ELITE</h3>
+                    <div class="plan-price">$1500 - $2000</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Tests Ilimitados</li>
+                        <li><i class="fas fa-check"></i> Soporte 24/7</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legal-notice">
+                Cumplimiento normativo bajo la <strong>Ley 1581 de 2012</strong> y <strong>Ley 1273 de 2009</strong> en Colombia.
+            </div>
+
+            <button type="submit" class="btn-submit">Finalizar Registro y Activar NOVUS</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Configuración de sectores directamente para evitar errores de Jinja2
+    const sectorConfig = {
+        "Fintech": {
+            "label": "Fintech",
+            "servicios": ["Monitor de Transacciones", "Anti-Fraude", "KYC Digital", "PCI DSS", "Secure API Gateway"]
+        },
+        "Aplicaciones Móviles": {
+            "label": "Aplicaciones Móviles",
+            "servicios": ["Secure Mobile SDK", "API Protection", "Device Fingerprinting", "Mobile Threat Defense", "App Security Testing"]
+        },
+        "Logística": {
+            "label": "Logística",
+            "servicios": ["Fleet Security", "IoT Device Protection", "Supply Chain Monitoring", "Route Security", "Warehouse Access Control"]
+        },
+        "Salud": {
+            "label": "Salud",
+            "servicios": ["HIPAA Compliance", "Medical Device Security", "Patient Data Protection", "Telehealth Security", "Pharma Supply Chain"]
+        },
+        "Gobierno": {
+            "label": "Gobierno",
+            "servicios": ["Government Cloud Security", "Citizen Data Protection", "Critical Infrastructure Monitoring", "Compliance Framework", "Secure Public Services"]
+        },
+        "Industrial": {
+            "label": "Industrial",
+            "servicios": ["OT Security", "SCADA Protection", "Industrial IoT Security", "Operational Technology Monitoring", "Critical Infrastructure Defense"]
+        },
+        "Retail": {
+            "label": "Retail",
+            "servicios": ["POS Security", "E-commerce Protection", "Customer Data Security", "Payment Gateway Security", "Retail Analytics Security"]
+        },
+        "Educación": {
+            "label": "Educación",
+            "servicios": ["Student Data Protection", "LMS Security", "Online Assessment Security", "Educational Platform Security", "Academic Integrity Tools"]
+        }
+    };
+    const sectorEl = document.getElementById("sector");
+    const servicioEl = document.getElementById("servicio");
+
+    function selectPlan(planId, element) {
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('plan_seleccionado').value = planId;
+    }
+
+    function updateServices() {
+        const data = sectorConfig[sectorEl.value];
+        servicioEl.innerHTML = "";
+        data.servicios.forEach(s => {
+            const opt = document.createElement("option");
+            opt.value = s; opt.textContent = s;
+            servicioEl.appendChild(opt);
+        });
+    }
+
+    Object.keys(sectorConfig).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key; opt.textContent = sectorConfig[key].label;
+        sectorEl.appendChild(opt);
+    });
+
+    sectorEl.addEventListener("change", updateServices);
+    updateServices();
+</script>
+
+</body>
+</html>

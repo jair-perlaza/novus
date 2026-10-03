@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NOVUS - Automatización Táctica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #06090f; --emerald: #10b981; }
+        body { background-color: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+        .rule-card { background: #0c121d; border: 1px solid #1e293b; transition: all 0.3s; }
+        .rule-card:hover { border-color: var(--emerald); }
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1e293b; transition: .4s; border-radius: 34px; }
+        input:checked + .slider { background-color: var(--emerald); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="p-8 border-b border-gray-800 flex justify-between items-center bg-[#06090f]/80 backdrop-blur">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">AUTOMATIZACIÓN <span class="text-emerald-500 text-xs ml-2 font-mono">[AI ACTIVE]</span></h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Respuesta Proactiva ante Amenazas Detectadas</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-[9px] text-gray-500">Ejecuciones este mes</div>
+                    <div class="text-xl font-black text-emerald-500">{{ stats.ejecuciones_mes if stats and stats.ejecuciones_mes is defined else 0 }}</div>
+                </div>
+                <button class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-xs font-bold transition-all text-white">
+                    + Crear Playbook
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for r in reglas %}
+            <div class="rule-card p-6 rounded-2xl relative overflow-hidden">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                        <i class="fas fa-bolt text-sm"></i>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" {% if r.estado == 'Activo' %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <h3 class="font-bold text-sm mb-1">{{ r.nombre }}</h3>
+                <p class="text-[10px] text-gray-500 mb-4 h-8">{{ r.descripcion }}</p>
+
+                <div class="pt-4 border-t border-gray-800 flex justify-between items-center">
+                    <span class="text-[9px] text-gray-600 uppercase font-bold italic">Impacto: Alto</span>
+                    <span class="text-[10px] font-mono text-emerald-400">{{ r.ejecuciones_mes }} triggers</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mx-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-900/20 to-transparent border border-emerald-500/30">
+            <h4 class="text-xs font-black text-emerald-400 uppercase mb-2">Diferenciador NOVUS</h4>
+            <p class="text-xs text-gray-400 leading-relaxed max-w-2xl">
+                A diferencia de la competencia tradicional que solo emite reportes, NOVUS utiliza **Defensa Activa**. 
+                Nuestras reglas se ejecutan en el borde de la red de Cali, reduciendo el tiempo de respuesta de minutos a milisegundos.
+            </p>
+        </div>
+    </main>
+</body>
+</html>

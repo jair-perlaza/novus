@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NOVUS - Configuración Táctica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #06090f; color: white; font-family: 'Inter', sans-serif; }
+        .config-card { background: #0c121d; border: 1px solid #1e293b; border-radius: 16px; transition: all 0.3s; }
+        .sector-btn { border: 1px solid #1e293b; transition: all 0.3s; }
+        .sector-btn:hover { border-color: #5d5fef; background: #5d5fef/10; }
+        .sector-active { border-color: #5d5fef; background: rgba(93, 95, 239, 0.2); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <main class="flex-1 overflow-y-auto p-8 space-y-8">
+        <header>
+            <h1 class="text-2xl font-bold italic uppercase tracking-tighter">Personalización de Defensa</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ajuste de NOVUS según el sector de su PyME</p>
+        </header>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div class="xl:col-span-2 space-y-6">
+                <div class="config-card p-6">
+                    <h3 class="text-xs font-bold text-indigo-400 uppercase mb-4 tracking-widest">1. Seleccione su Sector Económico</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% if sectores %}
+                        {% for s in sectores %}
+                        <button class="sector-btn p-4 rounded-xl text-left {% if s.id == config.sector_activo %}sector-active{% endif %}">
+                            <div class="text-sm font-bold text-white">{{ s.nombre }}</div>
+                            <div class="text-[9px] text-gray-500 mt-1 uppercase">Prioridad: {{ s.enfoque }}</div>
+                        </button>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-sm text-gray-500 col-span-2">Sin datos disponibles — catálogo de sectores no configurado.</p>
+                        {% endif %}
+                    </div>
+                    <p class="text-[9px] text-gray-600 mt-4 italic">Los sectores se cargarán cuando exista configuración en base de datos.</p>
+                </div>
+
+                <div class="config-card p-6">
+                    <h3 class="text-xs font-bold text-indigo-400 uppercase mb-4 tracking-widest">2. Intensidad del Pentesting</h3>
+                    <div class="flex space-x-4">
+                        <button class="flex-1 bg-[#06090f] border border-gray-800 p-3 rounded-lg text-[10px] font-bold hover:border-indigo-500">PASIVO</button>
+                        <button class="flex-1 bg-indigo-600 border border-indigo-500 p-3 rounded-lg text-[10px] font-bold shadow-lg shadow-indigo-500/20">ESTÁNDAR (RECOMENDADO)</button>
+                        <button class="flex-1 bg-[#06090f] border border-red-900/30 p-3 rounded-lg text-[10px] font-bold hover:border-red-500 text-red-500">AGRESIVO (ESTRÉS)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="config-card p-6">
+                    <h3 class="text-xs font-bold text-indigo-400 uppercase mb-4 tracking-widest">Canales de Alerta</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-[#06090f] rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-whatsapp text-green-500"></i>
+                                <span class="text-[11px]">WhatsApp (Gerencia)</span>
+                            </div>
+                            <div class="w-8 h-4 bg-indigo-600 rounded-full relative"><div class="absolute right-1 top-1 w-2 h-2 bg-white rounded-full"></div></div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-[#06090f] rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="far fa-envelope text-indigo-400"></i>
+                                <span class="text-[11px]">Reporte Diario Email</span>
+                            </div>
+                            <div class="w-8 h-4 bg-gray-800 rounded-full relative"><div class="absolute left-1 top-1 w-2 h-2 bg-gray-500 rounded-full"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-xl text-xs font-black shadow-xl transition-all">
+                    GUARDAR CONFIGURACIÓN TÁCTICA
+                </button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

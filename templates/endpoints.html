@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NOVUS - Gestión de Endpoints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #06090f; --panel-dark: #0c121d; --accent-blue: #5d5fef; }
+        body { background-color: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+        .endpoint-row:hover { background: rgba(93, 95, 239, 0.05); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col bg-[#06090f] grid-bg">
+        <header class="px-8 py-6 border-b border-gray-800 flex justify-between items-center bg-[#06090f]/50 backdrop-blur">
+            <div>
+                <h1 class="text-xl font-bold">Gestión de Endpoints</h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest italic">Monitoreo de Agentes en Tiempo Real</p>
+            </div>
+            <div class="flex space-x-3">
+                <div class="bg-blue-500/10 border border-blue-500/50 px-4 py-1 rounded text-[10px] text-blue-400 font-bold">
+                    ESCANEANDO: {{ endpoints|length }} DISPOSITIVOS
+                </div>
+            </div>
+        </header>
+
+        <div class="p-8 overflow-y-auto">
+            <div class="bg-[#0c121d] border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] text-gray-500 uppercase bg-[#06090f] border-b border-gray-800">
+                        <tr>
+                            <th class="p-4">Dispositivo</th>
+                            <th class="p-4">Dirección IP</th>
+                            <th class="p-4">MAC Address</th>
+                            <th class="p-4">Tipo</th>
+                            <th class="p-4">Riesgo</th>
+                            <th class="p-4 text-right">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs divide-y divide-gray-800 font-mono">
+                        {% for ep in endpoints %}
+                        <tr class="endpoint-row transition-all">
+                            <td class="p-4 flex items-center space-x-3">
+                                <i class="fas {{ ep.icono }} text-gray-500"></i>
+                                <span class="font-bold text-gray-200">{{ ep.nombre }}</span>
+                            </td>
+                            <td class="p-4 text-blue-400">{{ ep.ip }}</td>
+                            <td class="p-4 text-gray-500">{{ ep.mac }}</td>
+                            <td class="p-4">
+                                <span class="text-[9px] border border-gray-700 px-2 py-0.5 rounded text-gray-400 uppercase">
+                                    {{ ep.tipo }}
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                {% if ep.vulnerabilidades > 3 %}
+                                <span class="text-red-500 font-bold animate-pulse">● ALTO</span>
+                                {% else %}
+                                <span class="text-green-500">● BAJO</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-4 text-right">
+                                <span class="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-[9px] font-black uppercase">
+                                    {{ ep.estado }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not endpoints %}
+                        <tr>
+                            <td colspan="6" class="p-10 text-center text-gray-500 italic">Sin datos disponibles — ejecute un escaneo de red</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
